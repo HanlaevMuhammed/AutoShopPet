@@ -5,8 +5,6 @@ import (
 	"fmt"
 )
 
-type Ordr (map[string]structur.Order)
-
 func (a Ordr) Print() {
 	if len(a) == 0 {
 		fmt.Println("Заказов нет")

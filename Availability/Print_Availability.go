@@ -1,11 +1,8 @@
 package availability
 
 import (
-	structur "AutoShop/Structur"
 	"fmt"
 )
-
-type Availab map[string]structur.AvailabilitySt
 
 func (a Availab) PrintAll() {
 	fmt.Println("--- Доступные товары ---")
