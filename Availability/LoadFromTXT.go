@@ -24,13 +24,20 @@ func (a Availab) LoadFromTXT(filename, category string) {
 		}
 
 		parts := strings.Fields(line)
-		if len(parts) < 2 {
+		if len(parts) < 3 {
+			fmt.Println("Недостаточно данных в строке:", line)
 			continue
 		}
 
-		name := strings.Join(parts[:len(parts)-1], " ")
-		price, _ := strconv.ParseFloat(parts[len(parts)-1], 64)
-		a[name] = structur.AvailabilitySt{Category: category, Name: name, Price: price}
+		name := strings.Join(parts[:len(parts)-2], " ")
+		price, _ := strconv.ParseFloat(parts[len(parts)-2], 64)
+		quantity, err := strconv.Atoi(parts[len(parts)-1])
+		if err != nil {
+			fmt.Println("Ошибка:", err)
+			return
+		}
+
+		a[name] = structur.AvailabilitySt{Category: category, Name: name, Price: price, Quantity: quantity}
 	}
 	fmt.Printf("Загружено %d позиций (%s)\n", len(a), category)
 }

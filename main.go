@@ -18,5 +18,4 @@ func main() {
 
 	client.EnterOrder(orders, availabilitys)
 	orders.PrintByCategory()
-	orders.Print()
 }

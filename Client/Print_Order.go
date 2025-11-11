@@ -5,22 +5,25 @@ import (
 	"fmt"
 )
 
-func (a Ordr) Print() {
-	if len(a) == 0 {
+func (o Ordr) Print() {
+	if len(o) == 0 {
 		fmt.Println("Заказов нет")
 		return
 	}
 
 	fmt.Println("--- Ваш Заказ ---")
 	total := 0.0
-	for name, order := range a {
+	for name, order := range o {
+		itemTotal := order.Price * float64(order.Quantity)
 		fmt.Printf("Товар: %s\n", name)
-		fmt.Printf("Категория: %s\n", order.Category)
-		fmt.Printf("Цена: %.2f руб.\n", order.Price)
+		fmt.Printf("  Категория: %s\n", order.Category)
+		fmt.Printf("  Цена за шт: %.2f руб.\n", order.Price)
+		fmt.Printf("  Количество: %d\n", order.Quantity)
+		fmt.Printf("  Сумма: %.2f руб.\n", itemTotal)
 		fmt.Println("  ---")
-		total += order.Price
+		total += itemTotal
 	}
-	fmt.Print("Итоговая сумма заказа: %.2f руб.\n", total)
+	fmt.Printf("Итоговая сумма заказа: %.2f руб.\n", total)
 }
 
 func (o Ordr) PrintByCategory() {
@@ -40,8 +43,10 @@ func (o Ordr) PrintByCategory() {
 		fmt.Printf("\n%s:\n", category)
 		categoryTotal := 0.0
 		for _, order := range orders {
-			fmt.Printf("  - %s: %.2f руб.\n", order.Name, order.Price)
-			categoryTotal += order.Price
+			itemTotal := order.Price * float64(order.Quantity)
+			fmt.Printf("  - %s: %.2f руб. x %d = %.2f руб.\n",
+				order.Name, order.Price, order.Quantity, itemTotal)
+			categoryTotal += itemTotal
 		}
 		fmt.Printf("  Всего по категории: %.2f руб.\n", categoryTotal)
 		total += categoryTotal
@@ -52,12 +57,20 @@ func (o Ordr) PrintByCategory() {
 func (o Ordr) GetTotal() float64 {
 	total := 0.0
 	for _, order := range o {
-		total += order.Price
+		total += order.Price * float64(order.Quantity)
 	}
 	return total
 }
 
 func (o Ordr) GetCount() int {
+	count := 0
+	for _, order := range o {
+		count += order.Quantity
+	}
+	return count
+}
+
+func (o Ordr) GetItemCount() int {
 	return len(o)
 }
 
@@ -73,4 +86,13 @@ func (o Ordr) Clear() {
 	for k := range o {
 		delete(o, k)
 	}
+}
+
+func (o Ordr) IncreaseQuantity(name string, quantity int) bool {
+	if order, exists := o[name]; exists {
+		order.Quantity += quantity
+		o[name] = order
+		return true
+	}
+	return false
 }
